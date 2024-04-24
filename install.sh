@@ -1,28 +1,26 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Load environment variables from .env file
+# Load or initialize environment variables
 if [ -f .env ]; then
     source .env
+elif [ -f .env.example ]; then
+    cp .env.example .env
+    echo "Copied .env.example to .env"
+    source .env
 else
-    if [ -f .env.example ]; then
-        cp .env.example .env
-        echo "Copied .env.example to .env"
-        source .env
-    else
-        echo "Error: No .env file found. Attempting to use defaults."
-        VERSION=$(grep "Version:" README.md | sed 's/.*: //')
-        echo "VERSION=$VERSION" > .env
-        echo "INSTALL_DIR=/usr/bin/doxtend" >> .env
-        echo "DOCKER_PATH=/usr/bin/docker" >> .env
-        source .env
-    fi
+    echo "Error: No .env file found. Attempting to use defaults."
+    VERSION=$(grep "Version:" README.md | awk '{print $2}')
+    echo "VERSION=$VERSION" > .env
+    echo "INSTALL_DIR=/usr/bin/doxtend" >> .env
+    echo "DOCKER_PATH=/usr/bin/docker" >> .env
+    source .env
 fi
 
 # Determine the directory where this script is located
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Source the helper functions from doxtend-helpers.sh
-source "$script_dir/src/doxtend-helpers.sh"
+source "$script_dir/src/doxtend-helpers.sh"d
 
 # Check dependencies
 errors=0
@@ -42,38 +40,22 @@ if [ $errors -eq 1 ]; then
     exit 1
 fi
 
-# Function to setup the installation directory
+# Installation directory setup
 setup_directory() {
-    source .env  # Reload environment variables to get the latest changes
-    if [ ! -d "$INSTALL_DIR" ]; then
-        mkdir -p "$INSTALL_DIR"
-    else
-        echo "Installation directory already exists."
-    fi
-
-    # Copy all script files
+    mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
     cp "$script_dir"/src/* "$INSTALL_DIR"
-
-    # Set executable permissions for all scripts
     chmod +x "$INSTALL_DIR"/*.sh
-
-    # Replace the system Docker path with the one specified in .env, if different
-    if [ "$DOCKER_PATH" != "/usr/bin/docker" ]; then  # Assuming DOCKER_PATH must be valid to reach here
-        cp "$DOCKER_PATH" "$INSTALL_DIR/docker"
-    else
-        cp "/usr/bin/docker" "$INSTALL_DIR/docker"  # Default path
-    fi
+    cp "$DOCKER_PATH" "$INSTALL_DIR/docker"
     chmod +x "$INSTALL_DIR/docker"
 }
 
-# Function to update PATH
+# Update PATH in .bashrc
 update_path() {
-    if ! grep -q "export PATH=\"$INSTALL_DIR:\$PATH\"" ~/.bashrc; then
+    if ! grep -q "$INSTALL_DIR" ~/.bashrc; then
         echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> ~/.bashrc
-        source ~/.bashrc
-        echo "Doxtend has been successfully installed and configured. Please restart your terminal."
+        echo "PATH updated. Please restart your terminal."
     else
-        echo "PATH already updated in .bashrc. Doxtend is ready to use."
+        echo "PATH already includes $INSTALL_DIR"
     fi
 }
 

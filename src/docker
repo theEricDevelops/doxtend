@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ "$1" == "container" ] && [ "$2" == "upgrade" ]; then
     # Call the upgrade script with the remaining parameters

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Initialization at the start of the file
 _initialize_successfully_loaded=0
