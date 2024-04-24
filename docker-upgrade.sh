@@ -3,7 +3,7 @@
 # Script to update a Docker container
 
 # Define the path to your functions file
-functions_file="update-docker-functions.sh"
+functions_file="doxtend-helpers.sh"
 
 # Source the functions file
 if [ -r "$functions_file" ]; then
