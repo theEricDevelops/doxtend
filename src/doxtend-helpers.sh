@@ -17,18 +17,6 @@ jq_installed() {
     fi
 }
 
-# Function to check if Docker is installed and accessible
-docker_installed() {
-    local docker_path="$1"
-    if [ -x "$docker_path" ]; then
-        echo "Docker is installed at $docker_path."
-        return 0  # Docker is installed
-    else
-        echo "Docker is not installed at $docker_path."
-        return 1  # Docker is not installed
-    fi
-}
-
 # Function to find the Docker executable path
 docker_path() {
     # Try to get Docker path from .env or default locations
@@ -63,6 +51,18 @@ docker_path() {
     if [ -n "$path_found" ]; then
         sed -i "s|DOCKER_PATH=.*|DOCKER_PATH=$path_found|" .env
         export DOCKER_PATH="$path_found"
+    fi
+}
+
+# Function to check if Docker is installed and accessible
+docker_installed() {
+    local docker_path="$1"
+    if [ -x "$docker_path" ]; then
+        echo "Docker is installed at $docker_path."
+        return 0  # Docker is installed
+    else
+        echo "Docker is not installed at $docker_path."
+        return 1  # Docker is not installed
     fi
 }
 
