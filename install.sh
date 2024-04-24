@@ -32,42 +32,49 @@ if ! jq_installed; then
     errors=1
 fi
 
-if ! docker_installed; then
+if ! docker_installed "$DOCKER_PATH"; then
     echo "Docker is not installed or not in your PATH."
     errors=1
 fi
 
-if [ $errors -eq 1]; then
+if [ $errors -eq 1 ]; then
     echo "Please resolve the above errors and re-run the installation script."
     exit 1
 fi
 
 # Function to setup the installation directory
 setup_directory() {
-    if [ ! -d "$install_dir" ]; then
-        mkdir -p "$install_dir"
+    source .env  # Reload environment variables to get the latest changes
+    if [ ! -d "$INSTALL_DIR" ]; then
+        mkdir -p "$INSTALL_DIR"
     else
         echo "Installation directory already exists."
     fi
 
     # Copy all script files
-    cp "$script_dir"/src/* "$install_dir"
+    cp "$script_dir"/src/* "$INSTALL_DIR"
 
     # Set executable permissions for all scripts
-    chmod +x "$install_dir"/docker
-    chmod +x "$install_dir"/*.sh
+    chmod +x "$INSTALL_DIR"/*.sh
+
+    # Replace the system Docker path with the one specified in .env, if different
+    if [ "$DOCKER_PATH" != "/usr/bin/docker" ]; then  # Assuming DOCKER_PATH must be valid to reach here
+        cp "$DOCKER_PATH" "$INSTALL_DIR/docker"
+    else
+        cp "/usr/bin/docker" "$INSTALL_DIR/docker"  # Default path
+    fi
+    chmod +x "$INSTALL_DIR/docker"
 }
 
 # Function to update PATH
 update_path() {
-    # Add doxtend directory to the beginning of PATH in .bashrc or .profile
-    if grep -q "export PATH=\"$install_dir:\$PATH\"" ~/.bashrc; then
-        echo "PATH already updated in .bashrc"
-    else
-        echo "export PATH=\"$install_dir:\$PATH\"" >> ~/.bashrc
+    if ! grep -q "export PATH=\"$INSTALL_DIR:\$PATH\"" ~/.bashrc; then
+        echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> ~/.bashrc
         source ~/.bashrc
+        echo "Doxtend has been successfully installed and configured. Please restart your terminal."
+    else
+        echo "PATH already updated in .bashrc. Doxtend is ready to use."
     fi
-    echo "Doxtend has been successfully installed and configured."
 }
 
 # Main installation steps
