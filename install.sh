@@ -20,7 +20,7 @@ fi
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Source the helper functions from doxtend-helpers.sh
-source "$script_dir/src/doxtend-helpers.sh"d
+source "$script_dir/src/doxtend-helpers.sh"
 
 # Check dependencies
 errors=0
