@@ -10,10 +10,8 @@ jq_installed() {
         echo "On Ubuntu/Debian: sudo apt-get install jq"
         echo "On CentOS: sudo yum install jq"
         echo "On Windows or MacOS: https://stedolan.github.io/jq/download/"
-        exit 1
     else 
         echo "jq is installed."
-        return 0
     fi
 }
 

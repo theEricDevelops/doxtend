@@ -25,13 +25,13 @@ source "$script_dir/src/doxtend-helpers.sh"
 # Check dependencies
 errors=0
 
-if ! jq_installed; then
-    echo "jq is not installed. Please install jq before proceeding."
+if ! docker_installed "$DOCKER_PATH"; then
+    echo "Docker is not installed or not in your PATH."
     errors=1
 fi
 
-if ! docker_installed "$DOCKER_PATH"; then
-    echo "Docker is not installed or not in your PATH."
+if ! jq_installed; then
+    echo "jq is not installed. Please install jq before proceeding."
     errors=1
 fi
 
