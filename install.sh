@@ -5,7 +5,7 @@ set -euo pipefail
 if [ -f .env ]; then
     source .env
 else
-    echo "Error: No .env file found. Creating one with default values."
+    echo "No .env file found. Creating one with default values."
     cat > .env <<EOF
 ${VERSION:-VERSION=$(grep "Version:" README.md | awk '{print $2}' || echo "unknown")}
 ${INSTALL_DIR:-INSTALL_DIR=/usr/local/doxtend}

@@ -45,14 +45,14 @@ function update_docker_path() {
 
 function docker_installed() {
   # Ensure DOCKER_PATH is set and executable
-  if [ -z "$DOCKER_PATH" ]; then
-    printf "DOCKER_PATH is not set. Attempting to update path...\n"
+  if [ -z "$DOCKER_PATH" ] || [ ! -x "$DOCKER_PATH" ]; then
+    printf "DOCKER_PATH is not set or is not executable. Attempting to update path...\n"
     update_docker_path
   fi
 
   if command -v "$DOCKER_PATH" &> /dev/null; then
     printf "Docker is installed at %s\n" "$DOCKER_PATH"
-    sed -i "s|run-install.sh|$DOCKER_PATH|" docker
+    sed -i "s|run-install.sh|$DOCKER_PATH|" $script_dir/src/docker
   else
     printf "Docker is not installed or not accessible at %s. Please check the installation.\n" "$DOCKER_PATH"
     exit 1
