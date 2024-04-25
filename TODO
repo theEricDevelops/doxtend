@@ -13,3 +13,4 @@
 - [ ] In `install.sh`, add a trap statement to catch any errors that occur, but don't keep the install from occuring.
 - [ ] In `doxtend-helpers.sh`, add better, more descriptive error messages for `jq_installed` and `docker_installed`
 - [ ] Add license header / script description for each script.
+- [ ] Ask user if they want jq to be installed automatically.

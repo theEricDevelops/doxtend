@@ -1,55 +1,54 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # Load or initialize environment variables
 if [ -f .env ]; then
     source .env
-elif [ -f .env.example ]; then
-    cp .env.example .env
-    echo "Copied .env.example to .env"
-    source .env
 else
     echo "Error: No .env file found. Attempting to use defaults."
-    VERSION=$(grep "Version:" README.md | awk '{print $2}')
+    VERSION=$(grep "Version:" README.md | awk '{print $2}' || echo "unknown")
     echo "VERSION=$VERSION" > .env
-    echo "INSTALL_DIR=/usr/bin/doxtend" >> .env
-    echo "DOCKER_PATH=/usr/bin/docker" >> .env
-    source .env
+    echo "INSTALL_DIR=/usr/local/doxtend" >> .env
 fi
 
 # Determine the directory where this script is located
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Source the helper functions from doxtend-helpers.sh
+if [ ! -f "$script_dir/src/doxtend-helpers.sh" ]; then
+    echo "doxtend-helpers.sh not found in src directory. Please check your installation files."
+    exit 1
+fi
 source "$script_dir/src/doxtend-helpers.sh"
 
-# Check dependencies
-errors=0
+# Verify Docker installation using helper function
+if ! docker_installed; then
+    echo "Attempting to set Docker path..."
+    update_docker_path
+fi
 
-if ! docker_installed "$DOCKER_PATH"; then
-    echo "Docker is not installed or not in your PATH."
-    errors=1
+# Recheck after attempting to update path
+if ! docker_installed; then
+    echo "Failed to locate or install Docker. Please install Docker and rerun this script."
+    exit 1
 fi
 
 if ! command -v jq &> /dev/null; then
-  echo "jq could not be found. Please install jq before proceeding."
-  echo "On Ubuntu/Debian: sudo apt-get install jq"
-  echo "On CentOS: sudo yum install jq"
-  echo "On Windows or MacOS: https://stedolan.github.io/jq/download/"
-  errors=1
-fi
-
-if [ $errors -eq 1 ]; then
-    echo "Please resolve the above errors and re-run the installation script."
-    exit 1
+    echo "jq could not be found. Attempting to install..."
+    sudo apt-get install -y jq || sudo yum install -y jq || {
+        echo "Please install jq before proceeding."
+        echo "On Ubuntu/Debian: sudo apt-get install jq"
+        echo "On CentOS: sudo yum install jq"
+        echo "On Windows or MacOS: https://stedolan.github.io/jq/download/"
+        exit 1
+    }
 fi
 
 # Installation directory setup
 setup_directory() {
-    mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
-    cp "$script_dir"/src/* "$INSTALL_DIR"
-    chmod +x "$INSTALL_DIR"/*.sh
-    cp "$DOCKER_PATH" "$INSTALL_DIR/docker"
-    chmod +x "$INSTALL_DIR/docker"
+    sudo mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
+    sudo cp -r "$script_dir"/src/* "$INSTALL_DIR"
+    sudo chmod +x "$INSTALL_DIR"/*
 }
 
 # Update PATH in .bashrc

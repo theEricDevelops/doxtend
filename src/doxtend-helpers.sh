@@ -4,52 +4,59 @@
 _initialize_successfully_loaded=0
 
 # Function to find the Docker executable path
-docker_path() {
-    # Try to get Docker path from .env or default locations
-    local paths=("$DOCKER_PATH" "/usr/bin/docker" "/usr/local/bin/docker")
-    local path_found=""
+function update_docker_path() {
+  # Predefined common paths for Docker
+  local paths=("$DOCKER_PATH" "/usr/bin/docker" "/usr/local/bin/docker")
+  local path_found=""
 
-    for path in "${paths[@]}"; do
-        if [ -x "$path" ]; then
-            echo "Found Docker at $path"
-            path_found="$path"
-            break
-        fi
-    done
-
-    # If Docker is not found, ask the user to enter the path manually
-    while [ -z "$path_found" ]; do
-        echo "Please enter the full path to the Docker executable or leave blank to exit:"
-        read -r user_path
-        if [ -z "$user_path" ]; then
-            echo "No path provided. Exiting."
-            exit 1
-        elif [ -x "$user_path" ]; then
-            echo "Using Docker at $user_path"
-            path_found="$user_path"
-            break
-        else
-            echo "The specified path does not contain a valid Docker executable."
-        fi
-    done
-
-    # Update DOCKER_PATH in .env
-    if [ -n "$path_found" ]; then
-        sed -i "s|DOCKER_PATH=.*|DOCKER_PATH=$path_found|" .env
-        export DOCKER_PATH="$path_found"
+  # Iterate over possible Docker paths and check if executable
+  for path in "${paths[@]}"; do
+    if [ -x "$path" ]; then
+      echo "Found Docker at $path"
+      path_found="$path"
+      break
     fi
+  done
+
+  # Prompt the user for manual input if Docker not found
+  if [ -z "$path_found" ]; then
+    echo "Unable to find Docker in predefined paths. Please enter the full path to the Docker executable:"
+    while :; do
+      read -r user_path
+      if [ -z "$user_path" ]; then
+        echo "No path provided. Exiting."
+        exit 1
+      elif [ -x "$user_path" ]; then
+        echo "Using Docker at $user_path"
+        path_found="$user_path"
+        break
+      else
+        echo "The specified path does not contain a valid Docker executable. Try again:"
+      fi
+    done
+  fi
+
+  # Update DOCKER_PATH in .env and export it
+  if [ -n "$path_found" ]; then
+    sed -i "s|DOCKER_PATH=.*|DOCKER_PATH=$path_found|" .env
+    export DOCKER_PATH="$path_found"
+  fi
 }
 
-# Function to check if Docker is installed and accessible
-docker_installed() {
-    local docker_path="$1"
-    if [ -x "$docker_path" ]; then
-        echo "Docker is installed at $docker_path."
-        return 0  # Docker is installed
-    else
-        echo "Docker is not installed at $docker_path."
-        return 1  # Docker is not installed
-    fi
+function docker_installed() {
+  # Ensure DOCKER_PATH is set and executable
+  if [ -z "$DOCKER_PATH" ]; then
+    echo "DOCKER_PATH is not set. Attempting to update path..."
+    update_docker_path
+  fi
+
+  if [ -x "$DOCKER_PATH" ]; then
+    echo "Docker is installed at $DOCKER_PATH."
+    sed -i "s|run-install.sh|$DOCKER_PATH|" docker
+  else
+    echo "Docker is not installed or not accessible at $DOCKER_PATH. Please check the installation."
+    exit 1
+  fi
 }
 
 # Function to check if a Docker container is up and running properly
