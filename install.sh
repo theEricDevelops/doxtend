@@ -58,21 +58,23 @@ fi
 
 # Installation directory setup
 setup_directory() {
+    # Replace the placeholder with the actual path
+    sed -i "s|doxtend-upgrade|$INSTALL_DIR/docker-upgrade.sh|" $script_dir/src/docker
+    # Create the installation directory
     mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
-    cp -r "$script_dir"/src/* "$INSTALL_DIR"
-    chmod +x "$INSTALL_DIR"/*
-    sed -i "s|run-install.sh|$INSTALL_DIR/docker-upgrade.sh|" $script_dir/src/docker
-    printf "Installation complete. Files copied to %s\n" "$INSTALL_DIR"
-}
+    # Copy the script files to the installation directory
+    cp -r "$script_dir"/src/*.sh "$INSTALL_DIR"
+    # Make the scripts executable
+    chmod +x "$INSTALL_DIR"/*.sh
 
-# Create symbolic link to the script
-create_symlink() {
-    echo $(ln -sf "$INSTALL_DIR/docker" /usr/local/bin/docker || { 
-        echo "Failed to create symbolic link. It won't find the script in the PATH."
-        echo "Please add a symbolic link pointing /usr/local/bin/docker to $INSTALL_DIR/docker."
-        })
+    # Copy docker executable script to a folder in PATH before /usr/bin
+    cp -r "$script_dir"/src/docker /usr/local/bin/docker || {
+        echo "Failed to copy $INSTALL_DIR/src/docker to /usr/local/bin. Please copy it manually."
+        exit 1
+    }
+
+    printf "Installation complete. Scripts copied to %s and docker executable copied to /usr/local/bin\n" "$INSTALL_DIR"
 }
 
 # Main installation steps
 setup_directory
-create_symlink

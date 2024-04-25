@@ -52,7 +52,7 @@ function docker_installed() {
 
   if command -v "$DOCKER_PATH" &> /dev/null; then
     printf "Docker is installed at %s\n" "$DOCKER_PATH"
-    sed -i "s|run-install.sh|$DOCKER_PATH|" $script_dir/src/docker
+    sed -i "s|docker-binary|$DOCKER_PATH|" $script_dir/src/docker
   else
     printf "Docker is not installed or not accessible at %s. Please check the installation.\n" "$DOCKER_PATH"
     exit 1
