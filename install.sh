@@ -45,9 +45,18 @@ if [ ! -x "${DOCKER_PATH}" ]; then
 fi
 
 if ! command -v jq &> /dev/null; then
-    echo "jq could not be found. Attempting to install..."
+    echo "jq could not be found."
+    read -r -e -i "y" -p "Do you want to proceed with attempting to install? [Y/n]: " install_jq
+    if [[ "$install_jq" =~ ^[Nn] ]]; then
+        echo "Exiting..."
+        echo "Please install jq manually and rerun this script."
+        echo "On Ubuntu/Debian: sudo apt-get install jq"
+        echo "On CentOS: sudo yum install jq"
+        echo "On Windows or MacOS: https://stedolan.github.io/jq/download/"
+        exit 1
+    fi
     apt-get install -y jq || sudo yum install -y jq || {
-        echo "Please install jq before proceeding."
+        echo "Unsuccessful in installing jq. Please install jq manually and rerun this script."
         echo "On Ubuntu/Debian: sudo apt-get install jq"
         echo "On CentOS: sudo yum install jq"
         echo "On Windows or MacOS: https://stedolan.github.io/jq/download/"

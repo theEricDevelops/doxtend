@@ -1,16 +1,22 @@
 # TODO Items:
 -----
 
+In no particular order, these are some of the things I've thought about.
+
 - [x] Create Local Install Script (Completed)
 - [ ] Create Downloadable Install Script 
     - One that can be downloaded like ollama or docker installer `doxtend-installer.sh`
     - Can be downloaded and installed with the line `curl -fsSL https://ollama.com/install.sh | sh`
     - It should download all files necessary into a temporary directory and then go through with install.
-- [ ] Have install script modify `docker` to point to the correct docker binary on installation
+- [X] Have install script modify `docker` to point to the correct docker binary on installation
 - [ ] Create `--uninstall` flag for `docker` that goes through not only deleting files, but also removing from PATH
 - [ ] Allow for retaining files that already exist in install directory in case user wants to keep or require uninstall first.
 - [ ] Create `--fix` flag for `docker` in case docker gets removed/installed and takes precident in PATH
 - [ ] In `install.sh`, add a trap statement to catch any errors that occur, but don't keep the install from occuring.
-- [ ] In `doxtend-helpers.sh`, add better, more descriptive error messages for `jq_installed` and `docker_installed`
+- [X] In `doxtend-helpers.sh`, add better, more descriptive error messages for `jq_installed` and `docker_installed`
 - [ ] Add license header / script description for each script.
-- [ ] Ask user if they want jq to be installed automatically.
+- [X] Ask user if they want jq to be installed automatically.
+- [ ] Create binary that can be distributed for easier access (not sure how possible this one will be but I'd like to try)
+- [ ] Add in `-v` flag for `volume` bindings. Ideally, it will allow the user to edit what was created by inspecting the container rather than overriding completely.
+- [ ] Add in `-p` flag for `port` bindings. Same idea as volumes.
+- [ ] Add in `-n` flag for `network` bindings. Same idea as the previous two.

@@ -101,6 +101,11 @@ docker_run_command=$(bash docker-creator.sh "${filtered_args[@]}" -q | tail -n 1
 # Verify the docker run command contains the image and container name
 if [[ "$docker_run_command" == *"docker run"* && "$docker_run_command" == *"--name $CONTAINER"* && "$docker_run_command" == *"-d"* ]]; then
     echo "Valid docker run command captured: $docker_run_command"
+    read -r -e -i "y" -p "Do you want to proceed with the update? [Y/n]: " confirm
+    if [[ "$confirm" =~ ^[Nn] ]]; then
+        echo "Update cancelled. Exiting..."
+        exit 0
+    fi
 else
     echo "Error: No valid docker command created. Exiting..."
     exit 1
