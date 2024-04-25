@@ -11,8 +11,8 @@ function update_docker_path() {
 
   # Iterate over possible Docker paths and check if executable
   for path in "${paths[@]}"; do
-    if [ -x "$path" ]; then
-      echo "Found Docker at $path"
+    if command -v "$path" &> /dev/null; then
+      printf "Found Docker at %s\n" "$path"
       path_found="$path"
       break
     fi
@@ -20,25 +20,25 @@ function update_docker_path() {
 
   # Prompt the user for manual input if Docker not found
   if [ -z "$path_found" ]; then
-    echo "Unable to find Docker in predefined paths. Please enter the full path to the Docker executable:"
+    printf "Unable to find Docker in predefined paths. Please enter the full path to the Docker executable:"
     while :; do
-      read -r user_path
+      read -e -p "> " user_path
       if [ -z "$user_path" ]; then
-        echo "No path provided. Exiting."
+        printf "No path provided. Exiting.\n"
         exit 1
-      elif [ -x "$user_path" ]; then
-        echo "Using Docker at $user_path"
+      elif command -v "$user_path" &> /dev/null; then
+        printf "Using Docker at %s\n" "$user_path"
         path_found="$user_path"
         break
       else
-        echo "The specified path does not contain a valid Docker executable. Try again:"
+        printf "The specified path does not contain a valid Docker executable. Try again:"
       fi
     done
   fi
 
-  # Update DOCKER_PATH in .env and export it
   if [ -n "$path_found" ]; then
-    sed -i "s|DOCKER_PATH=.*|DOCKER_PATH=$path_found|" .env
+    # Update DOCKER_PATH in .env and export it
+    sed -i "s|^DOCKER_PATH=.*|DOCKER_PATH=$path_found|" .env
     export DOCKER_PATH="$path_found"
   fi
 }
@@ -46,15 +46,15 @@ function update_docker_path() {
 function docker_installed() {
   # Ensure DOCKER_PATH is set and executable
   if [ -z "$DOCKER_PATH" ]; then
-    echo "DOCKER_PATH is not set. Attempting to update path..."
+    printf "DOCKER_PATH is not set. Attempting to update path...\n"
     update_docker_path
   fi
 
-  if [ -x "$DOCKER_PATH" ]; then
-    echo "Docker is installed at $DOCKER_PATH."
+  if command -v "$DOCKER_PATH" &> /dev/null; then
+    printf "Docker is installed at %s\n" "$DOCKER_PATH"
     sed -i "s|run-install.sh|$DOCKER_PATH|" docker
   else
-    echo "Docker is not installed or not accessible at $DOCKER_PATH. Please check the installation."
+    printf "Docker is not installed or not accessible at %s. Please check the installation.\n" "$DOCKER_PATH"
     exit 1
   fi
 }

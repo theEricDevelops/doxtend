@@ -5,10 +5,14 @@ set -euo pipefail
 if [ -f .env ]; then
     source .env
 else
-    echo "Error: No .env file found. Attempting to use defaults."
-    VERSION=$(grep "Version:" README.md | awk '{print $2}' || echo "unknown")
-    echo "VERSION=$VERSION" > .env
-    echo "INSTALL_DIR=/usr/local/doxtend" >> .env
+    echo "Error: No .env file found. Creating one with default values."
+    cat > .env <<EOF
+${VERSION:-VERSION=$(grep "Version:" README.md | awk '{print $2}' || echo "unknown")}
+${INSTALL_DIR:-INSTALL_DIR=/usr/local/doxtend}
+${DOCKER_PATH:-DOCKER_PATH=$(command -v docker || echo 'set-me')}
+EOF
+    # Set the variables for the script's session
+    eval $(grep ^[A-Z] .env)
 fi
 
 # Determine the directory where this script is located
