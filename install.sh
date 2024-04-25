@@ -57,8 +57,10 @@ fi
 
 # Installation directory setup
 setup_directory() {
-    # Replace the placeholder with the actual path
+    # Replace the placeholders with the actual paths
     sed -i "s|doxtend-upgrade|$INSTALL_DIR/docker-upgrade.sh|" $script_dir/src/docker
+    sed -i "s|doxtend-helpers.sh|$INSTALL_DIR/doxtend-helpers.sh|" $script_dir/src/docker-upgrade.sh
+    sed -i "s|docker-creator.sh|$INSTALL_DIR/docker-creator.sh|" $script_dir/src/docker-upgrade.sh
     # Create the installation directory
     mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
     # Copy the script files to the installation directory
@@ -73,6 +75,7 @@ setup_directory() {
     }
 
     printf "Installation complete. Scripts copied to %s and docker executable copied to /usr/local/bin\n" "$INSTALL_DIR"
+    printf "You may need to restart your shell or run 'hash -r' to recognize the new command.\n"
     exit 0
 }
 
