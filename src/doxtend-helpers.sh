@@ -3,18 +3,6 @@
 # Initialization at the start of the file
 _initialize_successfully_loaded=0
 
-# Function to check for jq
-jq_installed() {
-    if ! command -v jq &> /dev/null; then
-        echo "jq could not be found. Please install jq before proceeding."
-        echo "On Ubuntu/Debian: sudo apt-get install jq"
-        echo "On CentOS: sudo yum install jq"
-        echo "On Windows or MacOS: https://stedolan.github.io/jq/download/"
-    else 
-        echo "jq is installed."
-    fi
-}
-
 # Function to find the Docker executable path
 docker_path() {
     # Try to get Docker path from .env or default locations

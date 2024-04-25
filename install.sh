@@ -30,9 +30,12 @@ if ! docker_installed "$DOCKER_PATH"; then
     errors=1
 fi
 
-if ! jq_installed; then
-    echo "jq is not installed. Please install jq before proceeding."
-    errors=1
+if ! type jq > /dev/null; then
+  echo "jq could not be found. Please install jq before proceeding."
+  echo "On Ubuntu/Debian: sudo apt-get install jq"
+  echo "On CentOS: sudo yum install jq"
+  echo "On Windows or MacOS: https://stedolan.github.io/jq/download/"
+  errors=1
 fi
 
 if [ $errors -eq 1 ]; then
