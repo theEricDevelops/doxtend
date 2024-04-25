@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+sudo bash -E "$0"
 # Ensure the script is run with root or sudo privileges
 if [ "$(id -u)" -ne 0 ]; then
     echo "This script must be run as root or with sudo privileges."
@@ -46,7 +47,7 @@ fi
 
 if ! command -v jq &> /dev/null; then
     echo "jq could not be found. Attempting to install..."
-    sudo apt-get install -y jq || sudo yum install -y jq || {
+    apt-get install -y jq || sudo yum install -y jq || {
         echo "Please install jq before proceeding."
         echo "On Ubuntu/Debian: sudo apt-get install jq"
         echo "On CentOS: sudo yum install jq"
@@ -57,11 +58,11 @@ fi
 
 # Installation directory setup
 setup_directory() {
-    sudo mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
-    sudo cp -r "$script_dir"/src/* "$INSTALL_DIR"
-    sudo chmod +x "$INSTALL_DIR"/*
+    mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
+    cp -r "$script_dir"/src/* "$INSTALL_DIR"
+    chmod +x "$INSTALL_DIR"/*
     sed -i "s|run-install.sh|$INSTALL_DIR/docker-upgrade.sh|" $script_dir/src/docker
-    printf "Installation complete. Files copied to %s\n" "$INSTALL_DIR\n"
+    printf "Installation complete. Files copied to %s\n" "$INSTALL_DIR"
 }
 
 # Create symbolic link to the script
