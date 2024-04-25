@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-sudo bash -E "$0"
 # Ensure the script is run with root or sudo privileges
 if [ "$(id -u)" -ne 0 ]; then
     echo "This script must be run as root or with sudo privileges."
@@ -74,6 +73,7 @@ setup_directory() {
     }
 
     printf "Installation complete. Scripts copied to %s and docker executable copied to /usr/local/bin\n" "$INSTALL_DIR"
+    exit 0
 }
 
 # Main installation steps
