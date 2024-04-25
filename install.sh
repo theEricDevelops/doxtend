@@ -30,7 +30,7 @@ if ! docker_installed "$DOCKER_PATH"; then
     errors=1
 fi
 
-if ! type jq > /dev/null; then
+if ! command -v jq &> /dev/null; then
   echo "jq could not be found. Please install jq before proceeding."
   echo "On Ubuntu/Debian: sudo apt-get install jq"
   echo "On CentOS: sudo yum install jq"
