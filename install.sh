@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+
+# Ensure the script is run with root or sudo privileges
+if [ "$(id -u)" -ne 0 ]; then
+    echo "This script must be run as root or with sudo privileges."
+    exit 1
+fi
+
 set -euo pipefail
 
 # Determine the directory where this script is located
@@ -54,18 +61,17 @@ setup_directory() {
     sudo cp -r "$script_dir"/src/* "$INSTALL_DIR"
     sudo chmod +x "$INSTALL_DIR"/*
     sed -i "s|run-install.sh|$INSTALL_DIR/docker-upgrade.sh|" $script_dir/src/docker
+    printf "Installation complete. Files copied to %s\n" "$INSTALL_DIR\n"
 }
 
-# Update PATH in .bashrc
-update_path() {
-    if ! grep -q "$INSTALL_DIR" ~/.bashrc; then
-        echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> ~/.bashrc
-        echo "PATH updated. Please restart your terminal."
-    else
-        echo "PATH already includes $INSTALL_DIR"
-    fi
+# Create symbolic link to the script
+create_symlink() {
+    echo $(ln -sf "$INSTALL_DIR/docker" /usr/local/bin/docker || { 
+        echo "Failed to create symbolic link. It won't find the script in the PATH."
+        echo "Please add a symbolic link pointing /usr/local/bin/docker to $INSTALL_DIR/docker."
+        })
 }
 
 # Main installation steps
 setup_directory
-update_path
+create_symlink
