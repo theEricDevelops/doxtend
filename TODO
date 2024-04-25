@@ -11,7 +11,7 @@ In no particular order, these are some of the things I've thought about.
 - [X] Have install script modify `docker` to point to the correct docker binary on installation
 - [X] Create `--uninstall` flag for `docker` that goes through not only deleting files, but also removing from PATH
 - [ ] Allow for retaining files that already exist in install directory in case user wants to keep or require uninstall first.
-- [ ] Create `--fix` flag for `docker` in case docker gets removed/installed and takes precident in PATH
+- [ ] ~~Create `--fix` flag for `docker` in case docker gets removed/installed and takes precident in PATH~~
 - [ ] In `install.sh`, add a trap statement to catch any errors that occur, but don't keep the install from occuring.
 - [X] In `doxtend-helpers.sh`, add better, more descriptive error messages for `jq_installed` and `docker_installed`
 - [ ] Add license header / script description for each script.
@@ -20,3 +20,4 @@ In no particular order, these are some of the things I've thought about.
 - [ ] Add in `-v` flag for `volume` bindings. Ideally, it will allow the user to edit what was created by inspecting the container rather than overriding completely.
 - [ ] Add in `-p` flag for `port` bindings. Same idea as volumes.
 - [ ] Add in `-n` flag for `network` bindings. Same idea as the previous two.
+- [ ] Create better error handling. (i.e. if a container name isn't found, specify that before exiting...)
