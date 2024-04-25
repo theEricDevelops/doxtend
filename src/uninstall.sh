@@ -23,3 +23,6 @@ rm -rf $current_dir
 printf "done. \nReseting hash..."
 hash -r
 printf "done. \nUninstall complete.\n"
+
+# We try it even if it doesn't always work
+hash -r
