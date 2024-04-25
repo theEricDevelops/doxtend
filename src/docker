@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-$doxtend_dir=install_location
+doxtend_dir=install_location
 
 if [ "$1" == "upgrade" ]; then
     # Call the upgrade script with the remaining parameters

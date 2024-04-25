@@ -7,7 +7,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 set -euo pipefail
-$current_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+current_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Uninstall doxtend
 echo "Uninstalling doxtend..."
@@ -23,6 +23,4 @@ rm -rf $current_dir
 printf "done. \nReseting hash..."
 hash -r
 printf "done. \nUninstall complete.\n"
-
-# We try it even if it doesn't always work
-hash -r
+printf "Just a reminder, you may need to type 'hash -r' to reset the hash.\n"
