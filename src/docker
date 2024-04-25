@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
+$doxtend_dir = install_location
 
 if [ "$1" == "upgrade" ]; then
     # Call the upgrade script with the remaining parameters
-    doxtend-upgrade "${@:2}"
+    $doxtend_dir/docker-upgrade.sh "${@:2}"
+elif [ "$1" == "--uninstall-doxtend" ]; then
+    # Call the uninstall script
+    $doxtend_dir/uninstall.sh 
 else
     # Pass all other commands to the original docker CLI
     docker-binary "$@"
 fi
+
+#doxtend <- this verifies the docker file is not the actual docker binary for uninstall

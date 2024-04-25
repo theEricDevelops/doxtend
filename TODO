@@ -9,7 +9,7 @@ In no particular order, these are some of the things I've thought about.
     - Can be downloaded and installed with the line `curl -fsSL https://ollama.com/install.sh | sh`
     - It should download all files necessary into a temporary directory and then go through with install.
 - [X] Have install script modify `docker` to point to the correct docker binary on installation
-- [ ] Create `--uninstall` flag for `docker` that goes through not only deleting files, but also removing from PATH
+- [X] Create `--uninstall` flag for `docker` that goes through not only deleting files, but also removing from PATH
 - [ ] Allow for retaining files that already exist in install directory in case user wants to keep or require uninstall first.
 - [ ] Create `--fix` flag for `docker` in case docker gets removed/installed and takes precident in PATH
 - [ ] In `install.sh`, add a trap statement to catch any errors that occur, but don't keep the install from occuring.
