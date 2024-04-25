@@ -2,7 +2,7 @@
 
 if [ "$1" == "upgrade" ]; then
     # Call the upgrade script with the remaining parameters
-    docker-upgrade.sh "${@:2}"
+    run-install.sh "${@:2}"
 else
     # Pass all other commands to the original docker CLI
     run-install.sh "$@"

@@ -88,7 +88,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Ensure that a container name is provided
-if [[ -z "${filtered_args[-1]}" || "${filtered_args[-1]}" == -* ]]; then
+if [[ -z "${filtered_args[-1]}" || "${filtered_args[-1]}" == -* || ${#filtered_args[@]} -eq 0 ]]; then
     echo "Error: Container name/id is required."
     usage
     exit 1

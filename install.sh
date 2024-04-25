@@ -11,7 +11,7 @@ else
     echo "No .env file found. Creating one with default values."
     cat > .env <<EOF
 ${VERSION:-VERSION=$(grep "Version:" $script_dir/README.md | awk '{print $2}' || echo "unknown")}
-${INSTALL_DIR:-INSTALL_DIR=/usr/local/doxtend}
+${INSTALL_DIR:-INSTALL_DIR=/usr/opt/doxtend}
 ${DOCKER_PATH:-DOCKER_PATH=$(command -v docker || echo 'set-me')}
 EOF
     # Set the variables for the script's session
@@ -53,6 +53,7 @@ setup_directory() {
     sudo mkdir -p "$INSTALL_DIR" || { echo "Failed to create installation directory"; exit 1; }
     sudo cp -r "$script_dir"/src/* "$INSTALL_DIR"
     sudo chmod +x "$INSTALL_DIR"/*
+    sed -i "s|run-install.sh|$INSTALL_DIR/docker-upgrade.sh|" $script_dir/src/docker
 }
 
 # Update PATH in .bashrc
