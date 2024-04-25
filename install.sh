@@ -32,7 +32,7 @@ if ! docker_installed; then
 fi
 
 # Recheck after attempting to update path
-if ! docker_installed; then
+if [ ! -x "${DOCKER_PATH}" ]; then
     echo "Failed to locate or install Docker. Please install Docker and rerun this script."
     exit 1
 fi
