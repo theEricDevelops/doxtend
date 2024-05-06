@@ -108,6 +108,7 @@ if [[ "$docker_run_command" == *"docker run"* && "$docker_run_command" == *"--na
     fi
 else
     echo "Error: No valid docker command created. Exiting..."
+    echo "$docker_run_command"
     exit 1
 fi
 
